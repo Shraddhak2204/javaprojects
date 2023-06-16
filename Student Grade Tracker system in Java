@@ -1,0 +1,122 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+class Student {
+    private String name;
+    private Map<String, Double> grades;
+
+    public Student(String name) {
+        this.name = name;
+        this.grades = new HashMap<>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void addGrade(String subject, double grade) {
+        grades.put(subject, grade);
+    }
+
+    public double getAverageGrade() {
+        double sum = 0;
+        for (double grade : grades.values()) {
+            sum += grade;
+        }
+        return sum / grades.size();
+    }
+
+    public String getGradeReport() {
+        StringBuilder report = new StringBuilder();
+        report.append("Grade Report for ").append(name).append(":\n");
+        for (Map.Entry<String, Double> entry : grades.entrySet()) {
+            report.append("- ").append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        report.append("Average Grade: ").append(getAverageGrade());
+        return report.toString();
+    }
+}
+
+class GradeTracker {
+    private Map<String, Student> students;
+
+    public GradeTracker() {
+        students = new HashMap<>();
+    }
+
+    public void addStudent(Student student) {
+        students.put(student.getName(), student);
+    }
+
+    public Student getStudent(String name) {
+        return students.get(name);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        GradeTracker gradeTracker = new GradeTracker();
+
+        while (true) {
+            System.out.println("Student Grade Tracker Menu:");
+            System.out.println("1. Add Student");
+            System.out.println("2. Add Grade");
+            System.out.println("3. Generate Grade Report");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter student name: ");
+                    String studentName = scanner.nextLine();
+                    Student student = new Student(studentName);
+                    gradeTracker.addStudent(student);
+                    System.out.println("Student added successfully!");
+                    break;
+
+                case 2:
+                    System.out.print("Enter student name: ");
+                    String name = scanner.nextLine();
+                    Student selectedStudent = gradeTracker.getStudent(name);
+                    if (selectedStudent == null) {
+                        System.out.println("Student not found.");
+                        break;
+                    }
+                    System.out.print("Enter subject: ");
+                    String subject = scanner.nextLine();
+                    System.out.print("Enter grade: ");
+                    double grade = scanner.nextDouble();
+                    scanner.nextLine(); // Consume newline
+
+                    selectedStudent.addGrade(subject, grade);
+                    System.out.println("Grade added successfully!");
+                    break;
+
+                case 3:
+                    System.out.print("Enter student name: ");
+                    String studentNameReport = scanner.nextLine();
+                    Student reportStudent = gradeTracker.getStudent(studentNameReport);
+                    if (reportStudent == null) {
+                        System.out.println("Student not found.");
+                        break;
+                    }
+                    System.out.println(reportStudent.getGradeReport());
+                    break;
+
+                case 4:
+                    System.out.println("Exiting Student Grade Tracker. Goodbye!");
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
+            }
+            System.out.println();
+        }
+    }
+}
